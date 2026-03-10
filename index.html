@@ -1,43 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>氣泡排序法</title>
+    <title>氣泡排序法說明</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        h1, h2 {
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <h1>氣泡排序法</h1>
-    <p>原始陣列: <span id="original-array"></span></p>
-    <p>排序後陣列: <span id="sorted-array"></span></p>
+    <h1>氣泡排序法 (Bubble Sort)</h1>
+    <p>氣泡排序法是一種簡單的排序演算法。它會反覆比較相鄰的元素，若順序錯誤則交換，直到整個序列有序。</p>
 
-    <script>
-        // 氣泡排序函式
-        function bubbleSort(arr) {
-            let n = arr.length;
-            for (let i = 0; i < n - 1; i++) {
-                let swapped = false;
-                for (let j = 0; j < n - i - 1; j++) {
-                    if (arr[j] > arr[j + 1]) {
-                        // 交換元素
-                        let temp = arr[j];
-                        arr[j] = arr[j + 1];
-                        arr[j + 1] = temp;
-                        swapped = true;
-                    }
-                }
-                // 如果沒有發生交換，提早結束
-                if (!swapped) break;
+    <h2>演算法步驟</h2>
+    <ol>
+        <li>從陣列的第一個元素開始，依序比較相鄰的元素。</li>
+        <li>如果前一個元素比後一個元素大，則交換它們的位置。</li>
+        <li>重複上述步驟，直到陣列的最後一個元素。</li>
+        <li>對剩下的元素重複此過程，直到整個陣列有序。</li>
+        <li>如果在某一回合中沒有發生交換，表示陣列已經有序，可以提早結束。</li>
+    </ol>
+
+    <h2>用 C 語言實現的程式碼</h2>
+    <pre>
+#include &lt;stdio.h&gt;
+
+// 氣泡排序函式
+void bubbleSort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        int swapped = 0; // 標誌是否有交換
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                swapped = 1;
             }
-            return arr;
         }
+        if (!swapped) break; // 如果沒有交換，提早結束
+    }
+}
 
-        // 測試資料
-        const data = [64, 34, 25, 12, 22, 11, 90];
-        document.getElementById("original-array").textContent = data.join(", ");
+// 主函式
+int main() {
+    int arr[] = {64, 34, 25, 12, 22, 11, 90};
+    int n = sizeof(arr) / sizeof(arr[0]);
 
-        // 排序並顯示結果
-        const sortedData = bubbleSort([...data]); // 使用副本避免修改原始陣列
-        document.getElementById("sorted-array").textContent = sortedData.join(", ");
-    </script>
+    printf("原始陣列: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    bubbleSort(arr, n);
+
+    printf("排序後陣列: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
+    </pre>
+
+    <h2>執行結果</h2>
+    <p>假設輸入的陣列為 <code>{64, 34, 25, 12, 22, 11, 90}</code>，執行後的輸出結果如下：</p>
+    <pre>
+原始陣列: 64 34 25 12 22 11 90
+排序後陣列: 11 12 22 25 34 64 90
+    </pre>
+
+    <h2>優缺點</h2>
+    <ul>
+        <li><strong>優點：</strong>實現簡單，適合用於教學或小型資料集。</li>
+        <li><strong>缺點：</strong>效率較低，時間複雜度為 O(n²)，不適合大型資料集。</li>
+    </ul>
 </body>
 </html>
