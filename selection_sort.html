@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>選擇排序法示範</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; }
+        .array-view { margin: 12px 0; font-size: 1.1em; }
+        .item { display: inline-block; width: 36px; text-align: center; margin: 0 4px; padding: 6px; background: #f4f4f4; border-radius: 4px; }
+        .active { background: #ffeb3b; }
+        .min { background: #8bc34a; color: #fff; }
+    </style>
+</head>
+<body>
+    <h1>選擇排序法 (Selection Sort) 示範教學</h1>
+    <p>選擇排序法是每一輪從未排序部分找到最小值，和當前位置交換，直到排序完成。</p>
+
+    <h2>演算法步驟</h2>
+    <ol>
+        <li>從第 0 個位置開始，找出未排序區間 (i 到末尾) 的最小值。</li>
+        <li>若最小值位置不是 i，則與 i 位置交換。</li>
+        <li>i 右移一位，重複直到最後一位。</li>
+    </ol>
+
+    <h2>互動演示</h2>
+    <button id="runBtn">開始排序</button>
+    <div class="array-view" id="arrayView"></div>
+    <div id="log"></div>
+
+    <script>
+        const data = [64, 25, 12, 22, 11, 50];
+        const view = document.getElementById('arrayView');
+        const log = document.getElementById('log');
+        const runBtn = document.getElementById('runBtn');
+
+        function render(arr, i=-1, minIndex=-1) {
+            view.innerHTML = '';
+            arr.forEach((v, idx) => {
+                const span = document.createElement('span');
+                span.className = 'item';
+                if (idx === i) span.classList.add('active');
+                if (idx === minIndex) span.classList.add('min');
+                span.textContent = v;
+                view.appendChild(span);
+            });
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function selectionSort(arr) {
+            log.innerHTML = '';
+            for (let i = 0; i < arr.length - 1; i++) {
+                let minIdx = i;
+                log.innerHTML += `<p>第 ${i} 輪，假設最小值為 index ${minIdx} (值=${arr[minIdx]})</p>`;
+                render(arr, i, minIdx);
+                await sleep(800);
+
+                for (let j = i + 1; j < arr.length; j++) {
+                    if (arr[j] < arr[minIdx]) {
+                        minIdx = j;
+                        log.innerHTML += `<p>找到更小值 index ${j} (值=${arr[j]})</p>`;
+                        render(arr, i, minIdx);
+                        await sleep(800);
+                    }
+                }
+
+                if (minIdx !== i) {
+                    [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+                    log.innerHTML += `<p>交換 index ${i} 和 index ${minIdx} => [${arr.join(', ')}]</p>`;
+                    render(arr, i, minIdx);
+                    await sleep(800);
+                } else {
+                    log.innerHTML += `<p>第 ${i} 輪無需交換</p>`;
+                }
+            }
+            log.innerHTML += '<p><strong>排序完成：[' + arr.join(', ') + ']</strong></p>';
+            render(arr);
+        }
+
+        render(data);
+
+        runBtn.addEventListener('click', () => {
+            runBtn.disabled = true;
+            selectionSort([...data]).then(() => runBtn.disabled = false);
+        });
+    </script>
+
+    <p><a href="index.html">回首頁</a></p>
+</body>
+</html>
