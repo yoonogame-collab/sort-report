@@ -3,40 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>氣泡排序法說明</title>
+    <title>氣泡排序法示範</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        .subtitle {
+            color: #999;
+            font-size: 0.95em;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        ol, ul {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+        li {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 8px;
         }
         pre {
-            background-color: #f4f4f4;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
             overflow-x: auto;
+            margin: 15px 0;
+            font-size: 0.9em;
+            line-height: 1.5;
         }
-        h1, h2 {
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .array-view {
+            margin: 15px 0;
+            font-size: 1.1em;
+            text-align: center;
+        }
+        .item {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            margin: 5px;
+            padding: 0;
+            background: #e8eef7;
+            border-radius: 6px;
+            border: 2px solid #667eea;
+            font-weight: bold;
             color: #333;
+            transition: all 0.2s;
+        }
+        .item.active {
+            background: #ffeb3b;
+            border-color: #fbc02d;
+            transform: scale(1.1);
+        }
+        .item.comparing {
+            background: #ff6b6b;
+            border-color: #ff5252;
+            color: white;
+        }
+        .item.sorted {
+            background: #4caf50;
+            border-color: #388e3c;
+            color: white;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 15px 10px 15px 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        #log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e1e4e8;
+        }
+        #log p {
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+        .nav-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .nav-link:hover {
+            background: #764ba2;
         }
     </style>
 </head>
 <body>
-    <h1>氣泡排序法 (Bubble Sort)</h1>
-    <p>氣泡排序法是一種簡單的排序演算法。它會反覆比較相鄰的元素，若順序錯誤則交換，直到整個序列有序。</p>
+    <div class="container">
+        <h1>🔄 氣泡排序法 (Bubble Sort)</h1>
+        <p class="subtitle">觀看演算法步驟的交互式演示</p>
+        
+        <p>氣泡排序法是一種簡單的排序演算法。它會反覆比較相鄰的元素，若順序錯誤則交換，直到整個序列有序。</p>
 
-    <h2>演算法步驟</h2>
-    <ol>
-        <li>從陣列的第一個元素開始，依序比較相鄰的元素。</li>
-        <li>如果前一個元素比後一個元素大，則交換它們的位置。</li>
-        <li>重複上述步驟，直到陣列的最後一個元素。</li>
-        <li>對剩下的元素重複此過程，直到整個陣列有序。</li>
-        <li>如果在某一回合中沒有發生交換，表示陣列已經有序，可以提早結束。</li>
-    </ol>
+        <h2>演算法步驟</h2>
+        <ol>
+            <li>從陣列的第一個元素開始，依序比較相鄰的元素。</li>
+            <li>如果前一個元素比後一個元素大，則交換它們的位置。</li>
+            <li>重複上述步驟，直到陣列的最後一個元素。</li>
+            <li>對剩下的元素重複此過程，直到整個陣列有序。</li>
+            <li>如果在某一回合中沒有發生交換，表示陣列已經有序，可以提早結束。</li>
+        </ol>
 
-    <h2>用 C 語言實現的程式碼</h2>
-    <pre>
+        <h2>互動演示</h2>
+        <button id="runBtn">▶ 開始排序</button>
+        <button id="resetBtn">↻ 重置</button>
+        <div class="array-view" id="arrayView"></div>
+        <div id="log"></div>
+
+        <h2>用 C 語言實現的程式碼</h2>
+        <pre>
 #include &lt;stdio.h&gt;
 
 // 氣泡排序函式
@@ -76,19 +217,87 @@ int main() {
 
     return 0;
 }
-    </pre>
+        </pre>
 
-    <h2>執行結果</h2>
-    <p>假設輸入的陣列為 <code>{64, 34, 25, 12, 22, 11, 90}</code>，執行後的輸出結果如下：</p>
-    <pre>
-原始陣列: 64 34 25 12 22 11 90
-排序後陣列: 11 12 22 25 34 64 90
-    </pre>
+        <h2>優缺點</h2>
+        <ul>
+            <li><strong>優點：</strong>實現簡單，適合用於教學或小型資料集。</li>
+            <li><strong>缺點：</strong>效率較低，時間複雜度為 O(n²)，不適合大型資料集。</li>
+        </ul>
 
-    <h2>優缺點</h2>
-    <ul>
-        <li><strong>優點：</strong>實現簡單，適合用於教學或小型資料集。</li>
-        <li><strong>缺點：</strong>效率較低，時間複雜度為 O(n²)，不適合大型資料集。</li>
-    </ul>
+        <a href="index.html" class="nav-link">← 回首頁</a>
+    </div>
+
+    <script>
+        const data = [64, 34, 25, 12, 22, 11, 90];
+        const originalData = [...data];
+        const view = document.getElementById('arrayView');
+        const log = document.getElementById('log');
+        const runBtn = document.getElementById('runBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        function render(arr, comparing=[], sorted=[]) {
+            view.innerHTML = '';
+            arr.forEach((v, idx) => {
+                const span = document.createElement('span');
+                span.className = 'item';
+                if (sorted.includes(idx)) span.classList.add('sorted');
+                else if (comparing.includes(idx)) span.classList.add('comparing');
+                span.textContent = v;
+                view.appendChild(span);
+            });
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function bubbleSort(arr) {
+            log.innerHTML = '';
+            for (let i = 0; i < arr.length - 1; i++) {
+                let swapped = false;
+                const sorted = Array.from({length: arr.length - i}, (_, idx) => arr.length - 1 - idx);
+                
+                for (let j = 0; j < arr.length - i - 1; j++) {
+                    log.innerHTML = `<p>第 ${i + 1} 輪，比較 index ${j} 和 ${j + 1} (值=${arr[j]} vs ${arr[j + 1]})</p>` + log.innerHTML;
+                    render(arr, [j, j + 1], sorted);
+                    await sleep(600);
+
+                    if (arr[j] > arr[j + 1]) {
+                        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                        log.innerHTML = `<p style="color: #ff6b6b;">🔄 交換 index ${j} 和 ${j + 1} => [${arr.join(', ')}]</p>` + log.innerHTML;
+                        swapped = true;
+                        render(arr, [j, j + 1], sorted);
+                        await sleep(600);
+                    }
+                }
+
+                if (!swapped) {
+                    log.innerHTML = `<p style="color: #4caf50;"><strong>✓ 排序完成：[${arr.join(', ')}]</strong></p>` + log.innerHTML;
+                    break;
+                }
+            }
+            const finalSorted = Array.from({length: arr.length}, (_, i) => i);
+            render(arr, [], finalSorted);
+            log.innerHTML = `<p style="color: #4caf50;"><strong>✓ 排序完成！[${arr.join(', ')}]</strong></p>` + log.innerHTML;
+            runBtn.disabled = false;
+        }
+
+        function resetSort() {
+            data.splice(0, data.length, ...originalData);
+            render(data);
+            log.innerHTML = '';
+            runBtn.disabled = false;
+        }
+
+        render(data);
+
+        runBtn.addEventListener('click', () => {
+            runBtn.disabled = true;
+            bubbleSort([...data]);
+        });
+
+        resetBtn.addEventListener('click', resetSort);
+    </script>
 </body>
 </html>

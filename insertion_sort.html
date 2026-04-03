@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>選擇排序法示範</title>
+    <title>插入排序法示範</title>
     <style>
         * {
             margin: 0;
@@ -56,6 +56,22 @@
             line-height: 1.8;
             margin-bottom: 8px;
         }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
         .array-view {
             margin: 15px 0;
             font-size: 1.1em;
@@ -76,16 +92,15 @@
             color: #333;
             transition: all 0.2s;
         }
-        .item.active {
+        .item.current {
             background: #ffeb3b;
             border-color: #fbc02d;
             transform: scale(1.1);
         }
-        .item.min {
-            background: #4caf50;
-            border-color: #388e3c;
+        .item.comparing {
+            background: #ff6b6b;
+            border-color: #ff5252;
             color: white;
-            transform: scale(1.1);
         }
         .item.sorted {
             background: #4caf50;
@@ -141,16 +156,18 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎯 選擇排序法 (Selection Sort)</h1>
+        <h1>📌 插入排序法 (Insertion Sort)</h1>
         <p class="subtitle">觀看演算法步驟的交互式演示</p>
         
-        <p>選擇排序法是每一輪從未排序部分找到最小值，和當前位置交換，直到排序完成。</p>
+        <p>插入排序法是一種簡單直觀的排序演算法。它通過逐一取未排序元素，並將其插入已排序的部分中的正確位置，最終完成排序。</p>
 
         <h2>演算法步驟</h2>
         <ol>
-            <li>從第 0 個位置開始，找出未排序區間 (i 到末尾) 的最小值。</li>
-            <li>若最小值位置不是 i，則與 i 位置交換。</li>
-            <li>i 右移一位，重複直到最後一位。</li>
+            <li>從第二個元素開始（第一個元素視為已排序）。</li>
+            <li>選取當前元素作為待插入元素。</li>
+            <li>從已排序部分的末尾開始比較，找到合適的插入位置。</li>
+            <li>將待插入元素插入到該位置，已排序部分的元素後移。</li>
+            <li>重複步驟 2-4，直到所有元素都被處理。</li>
         </ol>
 
         <h2>互動演示</h2>
@@ -159,25 +176,75 @@
         <div class="array-view" id="arrayView"></div>
         <div id="log"></div>
 
+        <h2>用 C 語言實現的程式碼</h2>
+        <pre>
+#include &lt;stdio.h&gt;
+
+// 插入排序函式
+void insertionSort(int arr[], int n) {
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        
+        // 將大於 key 的元素向右移動
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        // 將 key 插入到正確位置
+        arr[j + 1] = key;
+    }
+}
+
+// 主函式
+int main() {
+    int arr[] = {64, 34, 25, 12, 22, 11, 90};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    printf("原始陣列: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    insertionSort(arr, n);
+
+    printf("排序後陣列: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
+        </pre>
+
+        <h2>優缺點</h2>
+        <ul>
+            <li><strong>優點：</strong>實現簡單，對小型資料集或近似有序的資料集效率較高；原地排序，不需額外空間。</li>
+            <li><strong>缺點：</strong>時間複雜度為 O(n²)，不適合大型資料集。</li>
+            <li><strong>應用場景：</strong>適合用於教學或對小型資料集排序，以及在實時數據流中進行增量排序。</li>
+        </ul>
+
         <a href="index.html" class="nav-link">← 回首頁</a>
     </div>
 
     <script>
-        const data = [64, 25, 12, 22, 11, 50];
+        const data = [64, 34, 25, 12, 22, 11, 90];
         const originalData = [...data];
         const view = document.getElementById('arrayView');
         const log = document.getElementById('log');
         const runBtn = document.getElementById('runBtn');
         const resetBtn = document.getElementById('resetBtn');
 
-        function render(arr, currentIdx=-1, minIdx=-1, sortedIndices=[]) {
+        function render(arr, currentIdx=-1, comparingIdx=-1, sortedIndices=[]) {
             view.innerHTML = '';
             arr.forEach((v, idx) => {
                 const span = document.createElement('span');
                 span.className = 'item';
                 if (sortedIndices.includes(idx)) span.classList.add('sorted');
-                else if (idx === minIdx) span.classList.add('min');
-                else if (idx === currentIdx) span.classList.add('active');
+                else if (idx === comparingIdx) span.classList.add('comparing');
+                else if (idx === currentIdx) span.classList.add('current');
                 span.textContent = v;
                 view.appendChild(span);
             });
@@ -187,41 +254,47 @@
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        async function selectionSort(arr) {
+        async function insertionSort(arr) {
             log.innerHTML = '';
-            const sortedIndices = [];
+            const sortedIndices = [0]; // 第一個元素認為已排序
+            render(arr, -1, -1, sortedIndices);
 
-            for (let i = 0; i < arr.length - 1; i++) {
-                let minIdx = i;
-                log.innerHTML = `<p>第 ${i + 1} 輪，假設最小值為 index ${minIdx} (值=${arr[minIdx]})</p>` + log.innerHTML;
-                render(arr, i, minIdx, sortedIndices);
+            for (let i = 1; i < arr.length; i++) {
+                const key = arr[i];
+                let j = i - 1;
+                
+                log.innerHTML = `<p>第 ${i} 輪，待插入元素: ${key} (在 index ${i})</p>` + log.innerHTML;
+                render(arr, i, -1, sortedIndices);
                 await sleep(600);
 
-                for (let j = i + 1; j < arr.length; j++) {
-                    if (arr[j] < arr[minIdx]) {
-                        minIdx = j;
-                        log.innerHTML = `<p style="color: #667eea;">🔍 找到更小值 index ${j} (值=${arr[j]})</p>` + log.innerHTML;
-                        render(arr, i, minIdx, sortedIndices);
-                        await sleep(600);
-                    }
+                // 尋找插入位置並移動元素
+                while (j >= 0 && arr[j] > key) {
+                    log.innerHTML = `<p style="color: #ff6b6b;">比較 ${arr[j]} > ${key}，向右移動</p>` + log.innerHTML;
+                    render(arr, i, j, sortedIndices);
+                    await sleep(400);
+                    
+                    arr[j + 1] = arr[j];
+                    log.innerHTML = `<p style="color: #667eea;">移動 ${arr[j]} 到 index ${j + 1}</p>` + log.innerHTML;
+                    render(arr, i, j, sortedIndices);
+                    await sleep(400);
+                    
+                    j--;
                 }
 
-                if (minIdx !== i) {
-                    [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
-                    log.innerHTML = `<p style="color: #ff6b6b;">🔄 交換 index ${i} 和 index ${minIdx} => [${arr.join(', ')}]</p>` + log.innerHTML;
-                    render(arr, i, minIdx, sortedIndices);
-                    await sleep(600);
-                } else {
-                    log.innerHTML = `<p style="color: #666;">第 ${i + 1} 輪無需交換</p>` + log.innerHTML;
+                // 插入元素到正確位置
+                arr[j + 1] = key;
+                log.innerHTML = `<p style="color: #4caf50;">✓ 插入 ${key} 到 index ${j + 1} => [${arr.join(', ')}]</p>` + log.innerHTML;
+                
+                // 更新已排序索引
+                for (let k = 0; k <= i; k++) {
+                    if (!sortedIndices.includes(k)) sortedIndices.push(k);
                 }
                 
-                sortedIndices.push(i);
                 render(arr, -1, -1, sortedIndices);
-                await sleep(300);
+                await sleep(600);
             }
 
-            sortedIndices.push(arr.length - 1);
-            render(arr, -1, -1, sortedIndices);
+            render(arr, -1, -1, Array.from({length: arr.length}, (_, i) => i));
             log.innerHTML = `<p style="color: #4caf50;"><strong>✓ 排序完成！[${arr.join(', ')}]</strong></p>` + log.innerHTML;
             runBtn.disabled = false;
         }
@@ -237,7 +310,7 @@
 
         runBtn.addEventListener('click', () => {
             runBtn.disabled = true;
-            selectionSort([...data]);
+            insertionSort([...data]);
         });
 
         resetBtn.addEventListener('click', resetSort);

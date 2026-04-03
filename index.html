@@ -3,14 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>首頁</title>
+    <title>排序演算法教學中心</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            padding: 50px 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .subtitle {
+            color: #999;
+            font-size: 1.1em;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        .algorithms {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .algo-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .algo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+        .algo-card-content {
+            text-align: left;
+        }
+        .algo-card-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .algo-card-desc {
+            font-size: 0.95em;
+            opacity: 0.95;
+        }
+        .algo-card-icon {
+            font-size: 2.5em;
+            margin-left: 20px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .algo-card {
+                padding: 20px 15px;
+            }
+            .algo-card-icon {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>歡迎來到排序演算法範例</h1>
-    <p>點擊以下連結查看排序演算法的詳細說明：</p>
-    <ul>
-        <li><a href="bubble_sort.html">氣泡排序法</a></li>
-        <li><a href="selection_sort.html">選擇排序法</a></li>
-    </ul>
+    <div class="container">
+        <h1>🎓 排序演算法教學中心</h1>
+        <p class="subtitle">探索不同的排序演算法並觀看互動演示，理解每種算法的工作原理</p>
+        
+        <div class="algorithms">
+            <a href="bubble_sort.html" class="algo-card">
+                <div class="algo-card-content">
+                    <div class="algo-card-title">🔄 氣泡排序法</div>
+                    <div class="algo-card-desc">通過相鄰元素的比較和交換進行排序</div>
+                </div>
+                <span class="algo-card-icon">→</span>
+            </a>
+            
+            <a href="selection_sort.html" class="algo-card">
+                <div class="algo-card-content">
+                    <div class="algo-card-title">🎯 選擇排序法</div>
+                    <div class="algo-card-desc">每輪選擇最小值與當前位置交換</div>
+                </div>
+                <span class="algo-card-icon">→</span>
+            </a>
+            
+            <a href="insertion_sort.html" class="algo-card">
+                <div class="algo-card-content">
+                    <div class="algo-card-title">📌 插入排序法</div>
+                    <div class="algo-card-desc">逐一將元素插入已排序部分的正確位置</div>
+                </div>
+                <span class="algo-card-icon">→</span>
+            </a>
+        </div>
+    </div>
 </body>
 </html>
