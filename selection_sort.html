@@ -56,25 +56,46 @@
             line-height: 1.8;
             margin-bottom: 8px;
         }
-        .array-view {
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            overflow-x: auto;
             margin: 15px 0;
-            font-size: 1.1em;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .array-view {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            height: 250px;
+            gap: 8px;
+            margin: 30px 0;
+            padding: 10px;
+            background: #fdfdfd;
+            border-radius: 8px;
             text-align: center;
         }
         .item {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            text-align: center;
-            margin: 5px;
-            padding: 0;
-            background: #e8eef7;
-            border-radius: 6px;
-            border: 2px solid #667eea;
+            width: 35px;
+            background: #667eea;
+            color: white;
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 5px;
+            font-size: 0.8em;
             font-weight: bold;
-            color: #333;
-            transition: all 0.2s;
+            transition: height 0.2s, background-color 0.2s;
         }
         .item.active {
             background: #ffeb3b;
@@ -92,6 +113,14 @@
             border-color: #388e3c;
             color: white;
         }
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
         button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -99,7 +128,7 @@
             padding: 10px 25px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 0.9em;
             margin: 15px 10px 15px 0;
             transition: transform 0.2s, box-shadow 0.2s;
         }
@@ -154,27 +183,101 @@
         </ol>
 
         <h2>互動演示</h2>
-        <button id="runBtn">▶ 開始排序</button>
-        <button id="resetBtn">↻ 重置</button>
+        <div class="controls">
+            <button id="runBtn">▶ 開始排序</button>
+            <button id="resetBtn">🎲 隨機陣列</button>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label for="speed" style="font-size: 0.9em; color: #666;">演示速度：</label>
+                <input type="range" id="speed" min="50" max="1000" step="50" value="600" style="direction: rtl;">
+            </div>
+        </div>
+
         <div class="array-view" id="arrayView"></div>
         <div id="log"></div>
+
+        <h2>複雜度分析</h2>
+        <table style="width:100%; border-collapse: collapse; margin-bottom: 20px; background: #f8f9fa;">
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold;">最佳時間複雜度</td>
+                <td style="padding: 10px;">O(n²)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold;">平均時間複雜度</td>
+                <td style="padding: 10px;">O(n²)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold;">最差時間複雜度</td>
+                <td style="padding: 10px;">O(n²)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold;">空間複雜度</td>
+                <td style="padding: 10px;">O(1)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px; font-weight: bold;">穩定性</td>
+                <td style="padding: 10px;">不穩定 (Unstable)</td>
+            </tr>
+        </table>
+
+        <h2>用 C 語言實現的程式碼</h2>
+        <pre>
+#include &lt;stdio.h&gt;
+
+// 選擇排序函式
+void selectionSort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        int minIdx = i;
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIdx]) {
+                minIdx = j;
+            }
+        }
+        // 將找到的最小值與目前位置交換
+        int temp = arr[minIdx];
+        arr[minIdx] = arr[i];
+        arr[i] = temp;
+    }
+}
+
+int main() {
+    int arr[] = {64, 25, 12, 22, 11};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    selectionSort(arr, n);
+
+    printf("排序後的陣列: \n");
+    for (int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+    return 0;
+}
+        </pre>
+
+        <h2>優缺點</h2>
+        <ul>
+            <li><strong>優點：</strong>邏輯簡單，原地排序（In-place），不需要額外空間；在數據交換次數上表現較優。</li>
+            <li><strong>缺點：</strong>不論資料初始狀態如何，時間複雜度均為 O(n²)，效能較差；屬於不穩定排序。</li>
+        </ul>
 
         <a href="index.html" class="nav-link">← 回首頁</a>
     </div>
 
     <script>
-        const data = [64, 25, 12, 22, 11, 50];
-        const originalData = [...data];
+        let data = [64, 25, 12, 22, 11, 50];
         const view = document.getElementById('arrayView');
         const log = document.getElementById('log');
         const runBtn = document.getElementById('runBtn');
         const resetBtn = document.getElementById('resetBtn');
+        const speedInput = document.getElementById('speed');
+
+        const getDelay = () => 1050 - parseInt(speedInput.value);
 
         function render(arr, currentIdx=-1, minIdx=-1, sortedIndices=[]) {
             view.innerHTML = '';
+            const maxVal = Math.max(...arr);
             arr.forEach((v, idx) => {
                 const span = document.createElement('span');
                 span.className = 'item';
+                span.style.height = `${(v / maxVal) * 200 + 20}px`;
                 if (sortedIndices.includes(idx)) span.classList.add('sorted');
                 else if (idx === minIdx) span.classList.add('min');
                 else if (idx === currentIdx) span.classList.add('active');
@@ -195,14 +298,14 @@
                 let minIdx = i;
                 log.innerHTML = `<p>第 ${i + 1} 輪，假設最小值為 index ${minIdx} (值=${arr[minIdx]})</p>` + log.innerHTML;
                 render(arr, i, minIdx, sortedIndices);
-                await sleep(600);
+                await sleep(getDelay());
 
                 for (let j = i + 1; j < arr.length; j++) {
                     if (arr[j] < arr[minIdx]) {
                         minIdx = j;
                         log.innerHTML = `<p style="color: #667eea;">🔍 找到更小值 index ${j} (值=${arr[j]})</p>` + log.innerHTML;
                         render(arr, i, minIdx, sortedIndices);
-                        await sleep(600);
+                        await sleep(getDelay());
                     }
                 }
 
@@ -210,7 +313,7 @@
                     [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
                     log.innerHTML = `<p style="color: #ff6b6b;">🔄 交換 index ${i} 和 index ${minIdx} => [${arr.join(', ')}]</p>` + log.innerHTML;
                     render(arr, i, minIdx, sortedIndices);
-                    await sleep(600);
+                    await sleep(getDelay());
                 } else {
                     log.innerHTML = `<p style="color: #666;">第 ${i + 1} 輪無需交換</p>` + log.innerHTML;
                 }
@@ -240,7 +343,7 @@
             selectionSort([...data]);
         });
 
-        resetBtn.addEventListener('click', resetSort);
+        resetBtn.addEventListener('click', generateNewArray);
     </script>
 </body>
 </html>

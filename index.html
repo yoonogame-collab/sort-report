@@ -20,28 +20,29 @@
             padding: 20px;
         }
         .container {
-            max-width: 700px;
+            max-width: 1000px;
             width: 100%;
             background: white;
             border-radius: 12px;
-            padding: 50px 40px;
+            padding: 60px 50px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
         }
         h1 {
             color: #667eea;
             font-size: 2.5em;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            text-align: center;
         }
         .subtitle {
             color: #999;
             font-size: 1.1em;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             line-height: 1.6;
+            text-align: center;
         }
         .algorithms {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             margin-top: 40px;
         }
@@ -99,7 +100,7 @@
     <div class="container">
         <h1>🎓 排序演算法教學中心</h1>
         <p class="subtitle">探索不同的排序演算法並觀看互動演示，理解每種算法的工作原理</p>
-        
+
         <div class="algorithms">
             <a href="bubble_sort.html" class="algo-card">
                 <div class="algo-card-content">
@@ -121,6 +122,22 @@
                 <div class="algo-card-content">
                     <div class="algo-card-title">📌 插入排序法</div>
                     <div class="algo-card-desc">逐一將元素插入已排序部分的正確位置</div>
+                </div>
+                <span class="algo-card-icon">→</span>
+            </a>
+
+            <a href="merge_sort.html" class="algo-card">
+                <div class="algo-card-content">
+                    <div class="algo-card-title">🧩 合併排序法</div>
+                    <div class="algo-card-desc">採用分治法，將陣列遞迴分割再合併排序</div>
+                </div>
+                <span class="algo-card-icon">→</span>
+            </a>
+
+            <a href="quick_sort.html" class="algo-card">
+                <div class="algo-card-content">
+                    <div class="algo-card-title">⚡ 快速排序法</div>
+                    <div class="algo-card-desc">選取基準值並將陣列分為大、小兩部分</div>
                 </div>
                 <span class="algo-card-icon">→</span>
             </a>

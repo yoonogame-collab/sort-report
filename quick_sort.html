@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快速排序法示範</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        .subtitle {
+            color: #999;
+            font-size: 0.95em;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        ol, ul {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+        li {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        .array-view {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            height: 250px;
+            gap: 8px;
+            margin: 30px 0;
+            padding: 10px;
+            background: #fdfdfd;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .item {
+            width: 35px;
+            background: #667eea;
+            color: white;
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 5px;
+            font-size: 0.8em;
+            font-weight: bold;
+            transition: height 0.2s, background-color 0.2s;
+        }
+        .item.pivot { background: #fbc02d; transform: scale(1.1); }
+        .item.comparing { background: #ff6b6b; }
+        .item.sorted { background: #4caf50; }
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        #log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #e1e4e8;
+        }
+        .nav-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ 快速排序法 (Quick Sort)</h1>
+        <p class="subtitle">觀看演算法步驟的交互式演示</p>
+        
+        <p>快速排序法使用「分治法」，選取一個基準值 (Pivot)，將陣列分成「比基準值小」與「比基準值大」兩部分，再遞迴處理。</p>
+
+        <h2>演算法步驟</h2>
+        <ol>
+            <li>在數列中挑選一個元素作為「基準值」(Pivot)。</li>
+            <li>重新排列數列，所有比基準值小的元素擺放在其左邊，大的擺在右邊。</li>
+            <li>遞迴地對左右兩個子數列重複上述動作。</li>
+        </ol>
+
+        <h2>互動演示</h2>
+        <div class="controls">
+            <button id="runBtn">▶ 開始排序</button>
+            <button id="resetBtn">🎲 隨機陣列</button>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label for="speed" style="font-size: 0.9em; color: #666;">速度：</label>
+                <input type="range" id="speed" min="50" max="1000" step="50" value="600" style="direction: rtl;">
+            </div>
+        </div>
+        <div class="array-view" id="arrayView"></div>
+        <div id="log"></div>
+
+        <h2>複雜度分析</h2>
+        <table style="width:100%; border-collapse: collapse; margin-bottom: 20px; background: #f8f9fa;">
+            <tr style="border-bottom: 1px solid #ddd;"><td style="padding: 10px; font-weight: bold;">最佳時間複雜度</td><td style="padding: 10px;">O(n log n)</td></tr>
+            <tr style="border-bottom: 1px solid #ddd;"><td style="padding: 10px; font-weight: bold;">平均時間複雜度</td><td style="padding: 10px;">O(n log n)</td></tr>
+            <tr style="border-bottom: 1px solid #ddd;"><td style="padding: 10px; font-weight: bold;">最差時間複雜度</td><td style="padding: 10px;">O(n²) (當 Pivot 選取不佳時)</td></tr>
+            <tr style="border-bottom: 1px solid #ddd;"><td style="padding: 10px; font-weight: bold;">空間複雜度</td><td style="padding: 10px;">O(log n) (遞迴調用棧)</td></tr>
+            <tr style="border-bottom: 1px solid #ddd;"><td style="padding: 10px; font-weight: bold;">穩定性</td><td style="padding: 10px;">不穩定 (Unstable)</td></tr>
+        </table>
+
+        <h2>用 C 語言實現的程式碼</h2>
+        <pre>
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pivot = arr[high]; // 選取最後一個為 Pivot
+        int i = (low - 1);
+        for (int j = low; j < high; j++) {
+            if (arr[j] < pivot) {
+                i++;
+                int temp = arr[i]; arr[i] = arr[j]; arr[j] = temp;
+            }
+        }
+        int temp = arr[i + 1]; arr[i + 1] = arr[high]; arr[high] = temp;
+        int pi = i + 1;
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+        </pre>
+
+        <a href="index.html" class="nav-link">← 回首頁</a>
+    </div>
+
+    <script>
+        let data = [64, 34, 25, 12, 22, 11, 90];
+        const view = document.getElementById('arrayView');
+        const log = document.getElementById('log');
+        const speedInput = document.getElementById('speed');
+        const getDelay = () => 1050 - parseInt(speedInput.value);
+        const sleep = ms => new Promise(res => setTimeout(res, ms));
+
+        function render(arr, pivotIdx=-1, comparingIdx=-1, sortedIndices=[]) {
+            view.innerHTML = '';
+            const maxVal = Math.max(...arr);
+            arr.forEach((v, idx) => {
+                const span = document.createElement('span');
+                span.className = 'item';
+                span.style.height = `${(v / maxVal) * 200 + 20}px`;
+                if (sortedIndices.includes(idx)) span.classList.add('sorted');
+                else if (idx === pivotIdx) span.classList.add('pivot');
+                else if (idx === comparingIdx) span.classList.add('comparing');
+                span.textContent = v;
+                view.appendChild(span);
+            });
+        }
+
+        async function partition(arr, low, high) {
+            let pivot = arr[high];
+            log.innerHTML = `<p style="color: #fbc02d;">📍 選取基準值 Pivot: ${pivot}</p>` + log.innerHTML;
+            let i = low - 1;
+            for (let j = low; j < high; j++) {
+                render(arr, high, j);
+                await sleep(getDelay());
+                if (arr[j] < pivot) {
+                    i++;
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                    render(arr, high, i);
+                }
+            }
+            [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+            return i + 1;
+        }
+
+        async function qSort(arr, low, high) {
+            if (low <= high) {
+                let pi = await partition(arr, low, high);
+                await qSort(arr, low, pi - 1);
+                await qSort(arr, pi + 1, high);
+            }
+        }
+
+        document.getElementById('runBtn').addEventListener('click', async () => {
+            document.getElementById('runBtn').disabled = true;
+            await qSort(data, 0, data.length - 1);
+            render(data, -1, -1, Array.from({length: data.length}, (_, i) => i));
+            log.innerHTML = `<p style="color: #4caf50;"><strong>✓ 排序完成！</strong></p>` + log.innerHTML;
+            document.getElementById('runBtn').disabled = false;
+        });
+
+        function generate() {
+            data = Array.from({length: 8}, () => Math.floor(Math.random() * 90) + 10);
+            render(data); log.innerHTML = '';
+        }
+        document.getElementById('resetBtn').addEventListener('click', generate);
+        render(data);
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>插入排序法示範</title>
+    <title>合併排序法示範</title>
     <style>
         * {
             margin: 0;
@@ -66,12 +66,6 @@
             font-size: 0.9em;
             line-height: 1.5;
         }
-        code {
-            background: #f0f0f0;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-        }
         .array-view {
             display: flex;
             align-items: flex-end;
@@ -97,15 +91,11 @@
             font-weight: bold;
             transition: height 0.2s, background-color 0.2s;
         }
-        .item.current {
-            background: #ffeb3b;
-            border-color: #fbc02d;
-            transform: scale(1.1);
-        }
-        .item.comparing {
+        .item.active {
             background: #ff6b6b;
             border-color: #ff5252;
             color: white;
+            transform: scale(1.1);
         }
         .item.sorted {
             background: #4caf50;
@@ -129,28 +119,16 @@
             cursor: pointer;
             font-size: 0.9em;
             margin: 15px 10px 15px 0;
-            transition: transform 0.2s, box-shadow 0.2s;
         }
-        button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
         #log {
             background: #f8f9fa;
             padding: 15px;
             border-radius: 6px;
             margin-top: 20px;
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
             border: 1px solid #e1e4e8;
-        }
-        #log p {
-            font-size: 0.9em;
-            margin-bottom: 8px;
         }
         .nav-link {
             display: inline-block;
@@ -160,27 +138,21 @@
             color: white;
             text-decoration: none;
             border-radius: 6px;
-            transition: background 0.2s;
-        }
-        .nav-link:hover {
-            background: #764ba2;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📌 插入排序法 (Insertion Sort)</h1>
+        <h1>🧩 合併排序法 (Merge Sort)</h1>
         <p class="subtitle">觀看演算法步驟的交互式演示</p>
         
-        <p>插入排序法是一種簡單直觀的排序演算法。它通過逐一取未排序元素，並將其插入已排序的部分中的正確位置，最終完成排序。</p>
+        <p>合併排序法是採用分治法 (Divide and Conquer) 的典型應用。將大問題分成小問題解決，再將結果合併。</p>
 
         <h2>演算法步驟</h2>
         <ol>
-            <li>從第二個元素開始（第一個元素視為已排序）。</li>
-            <li>選取當前元素作為待插入元素。</li>
-            <li>從已排序部分的末尾開始比較，找到合適的插入位置。</li>
-            <li>將待插入元素插入到該位置，已排序部分的元素後移。</li>
-            <li>重複步驟 2-4，直到所有元素都被處理。</li>
+            <li>將陣列從中間切分成左右兩個子陣列。</li>
+            <li>遞迴地對左右子陣列進行合併排序。</li>
+            <li>將兩個已排序的子陣列合併成一個完整的排序陣列。</li>
         </ol>
 
         <h2>互動演示</h2>
@@ -200,19 +172,19 @@
         <table style="width:100%; border-collapse: collapse; margin-bottom: 20px; background: #f8f9fa;">
             <tr style="border-bottom: 1px solid #ddd;">
                 <td style="padding: 10px; font-weight: bold;">最佳時間複雜度</td>
-                <td style="padding: 10px;">O(n) (當資料已排序時)</td>
+                <td style="padding: 10px;">O(n log n)</td>
             </tr>
             <tr style="border-bottom: 1px solid #ddd;">
                 <td style="padding: 10px; font-weight: bold;">平均時間複雜度</td>
-                <td style="padding: 10px;">O(n²)</td>
+                <td style="padding: 10px;">O(n log n)</td>
             </tr>
             <tr style="border-bottom: 1px solid #ddd;">
                 <td style="padding: 10px; font-weight: bold;">最差時間複雜度</td>
-                <td style="padding: 10px;">O(n²)</td>
+                <td style="padding: 10px;">O(n log n)</td>
             </tr>
             <tr style="border-bottom: 1px solid #ddd;">
                 <td style="padding: 10px; font-weight: bold;">空間複雜度</td>
-                <td style="padding: 10px;">O(1)</td>
+                <td style="padding: 10px;">O(n)</td>
             </tr>
             <tr style="border-bottom: 1px solid #ddd;">
                 <td style="padding: 10px; font-weight: bold;">穩定性</td>
@@ -222,59 +194,43 @@
 
         <h2>用 C 語言實現的程式碼</h2>
         <pre>
-#include &lt;stdio.h&gt;
+void merge(int arr[], int l, int m, int r) {
+    int n1 = m - l + 1;
+    int n2 = r - m;
+    int L[n1], R[n2];
+    for (int i = 0; i < n1; i++) L[i] = arr[l + i];
+    for (int j = 0; j < n2; j++) R[j] = arr[m + 1 + j];
 
-// 插入排序函式
-void insertionSort(int arr[], int n) {
-    for (int i = 1; i < n; i++) {
-        int key = arr[i];
-        int j = i - 1;
-        
-        // 將大於 key 的元素向右移動
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        // 將 key 插入到正確位置
-        arr[j + 1] = key;
+    int i = 0, j = 0, k = l;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) arr[k++] = L[i++];
+        else arr[k++] = R[j++];
     }
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
 }
 
-// 主函式
-int main() {
-    int arr[] = {64, 34, 25, 12, 22, 11, 90};
-    int n = sizeof(arr) / sizeof(arr[0]);
-
-    printf("原始陣列: ");
-    for (int i = 0; i < n; i++) {
-        printf("%d ", arr[i]);
+void mergeSort(int arr[], int l, int r) {
+    if (l < r) {
+        int m = l + (r - l) / 2;
+        mergeSort(arr, l, m);
+        mergeSort(arr, m + 1, r);
+        merge(arr, l, m, r);
     }
-    printf("\n");
-
-    insertionSort(arr, n);
-
-    printf("排序後陣列: ");
-    for (int i = 0; i < n; i++) {
-        printf("%d ", arr[i]);
-    }
-    printf("\n");
-
-    return 0;
 }
         </pre>
 
         <h2>優缺點</h2>
         <ul>
-            <li><strong>優點：</strong>實現簡單，對小型資料集或近似有序的資料集效率較高；原地排序，不需額外空間。</li>
-            <li><strong>缺點：</strong>時間複雜度為 O(n²)，不適合大型資料集。</li>
-            <li><strong>應用場景：</strong>適合用於教學或對小型資料集排序，以及在實時數據流中進行增量排序。</li>
+            <li><strong>優點：</strong>時間複雜度穩定為 O(n log n)；屬於穩定排序。</li>
+            <li><strong>缺點：</strong>需要額外的 O(n) 空間來儲存暫存陣列。</li>
         </ul>
 
         <a href="index.html" class="nav-link">← 回首頁</a>
     </div>
 
     <script>
-        let data = [64, 34, 25, 12, 22, 11, 90];
+        let data = [38, 27, 43, 3, 9, 82, 10];
         const view = document.getElementById('arrayView');
         const log = document.getElementById('log');
         const runBtn = document.getElementById('runBtn');
@@ -283,69 +239,62 @@ int main() {
 
         const getDelay = () => 1050 - parseInt(speedInput.value);
 
-        function render(arr, currentIdx=-1, comparingIdx=-1, sortedIndices=[]) {
+        function render(arr, activeIndices = []) {
             view.innerHTML = '';
             const maxVal = Math.max(...arr);
             arr.forEach((v, idx) => {
                 const span = document.createElement('span');
                 span.className = 'item';
                 span.style.height = `${(v / maxVal) * 200 + 20}px`;
-                if (sortedIndices.includes(idx)) span.classList.add('sorted');
-                else if (idx === comparingIdx) span.classList.add('comparing');
-                else if (idx === currentIdx) span.classList.add('current');
+                if (activeIndices.includes(idx)) span.classList.add('active');
                 span.textContent = v;
                 view.appendChild(span);
             });
         }
 
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
+        const sleep = ms => new Promise(res => setTimeout(res, ms));
 
-        async function insertionSort(arr) {
-            log.innerHTML = '';
-            const sortedIndices = [0]; // 第一個元素認為已排序
-            render(arr, -1, -1, sortedIndices);
+        async function merge(arr, l, m, r) {
+            let n1 = m - l + 1;
+            let n2 = r - m;
+            let L = arr.slice(l, m + 1);
+            let R = arr.slice(m + 1, r + 1);
+            let i = 0, j = 0, k = l;
 
-            for (let i = 1; i < arr.length; i++) {
-                const key = arr[i];
-                let j = i - 1;
-                
-                log.innerHTML = `<p>第 ${i} 輪，待插入元素: ${key} (在 index ${i})</p>` + log.innerHTML;
-                render(arr, i, -1, sortedIndices);
+            log.innerHTML = `<p style="color: #667eea;">📦 合併區間 [${l}-${m}] 與 [${m+1}-${r}]</p>` + log.innerHTML;
+
+            while (i < n1 && j < n2) {
+                render(arr, [l + i, m + 1 + j]);
                 await sleep(getDelay());
-
-                // 尋找插入位置並移動元素
-                while (j >= 0 && arr[j] > key) {
-                    log.innerHTML = `<p style="color: #ff6b6b;">比較 ${arr[j]} > ${key}，向右移動</p>` + log.innerHTML;
-                    render(arr, i, j, sortedIndices);
-                    await sleep(getDelay() * 0.6);
-                    
-                    arr[j + 1] = arr[j];
-                    log.innerHTML = `<p style="color: #667eea;">移動 ${arr[j]} 到 index ${j + 1}</p>` + log.innerHTML;
-                    render(arr, i, j, sortedIndices);
-                    await sleep(getDelay() * 0.6);
-                    
-                    j--;
-                }
-
-                // 插入元素到正確位置
-                arr[j + 1] = key;
-                log.innerHTML = `<p style="color: #4caf50;">✓ 插入 ${key} 到 index ${j + 1} => [${arr.join(', ')}]</p>` + log.innerHTML;
-                
-                // 更新已排序索引
-                for (let k = 0; k <= i; k++) {
-                    if (!sortedIndices.includes(k)) sortedIndices.push(k);
-                }
-                
-                render(arr, -1, -1, sortedIndices);
-                await sleep(getDelay());
+                if (L[i] <= R[j]) arr[k++] = L[i++];
+                else arr[k++] = R[j++];
+                render(arr, [k-1]);
+                await sleep(getDelay() * 0.5);
             }
-
-            render(arr, -1, -1, Array.from({length: arr.length}, (_, i) => i));
-            log.innerHTML = `<p style="color: #4caf50;"><strong>✓ 排序完成！[${arr.join(', ')}]</strong></p>` + log.innerHTML;
-            runBtn.disabled = false;
+            while (i < n1) { arr[k++] = L[i++]; render(arr, [k-1]); await sleep(getDelay() * 0.5); }
+            while (j < n2) { arr[k++] = R[j++]; render(arr, [k-1]); await sleep(getDelay() * 0.5); }
         }
+
+        async function mergeSort(arr, l, r) {
+            if (l < r) {
+                let m = Math.floor(l + (r - l) / 2);
+                await mergeSort(arr, l, m);
+                await mergeSort(arr, m + 1, r);
+                await merge(arr, l, m, r);
+            }
+        }
+
+        runBtn.addEventListener('click', async () => {
+            runBtn.disabled = true;
+            log.innerHTML = '';
+            const arr = [...data];
+            await mergeSort(arr, 0, arr.length - 1);
+            render(arr);
+            log.innerHTML = `<p style="color: #4caf50;"><strong>✓ 排序完成！</strong></p>` + log.innerHTML;
+            runBtn.disabled = false;
+        });
+
+        render(data);
 
         function generateNewArray() {
             data = [];
@@ -356,14 +305,6 @@ int main() {
             log.innerHTML = '';
             runBtn.disabled = false;
         }
-
-        render(data);
-
-        runBtn.addEventListener('click', () => {
-            runBtn.disabled = true;
-            insertionSort([...data]);
-        });
-
         resetBtn.addEventListener('click', generateNewArray);
     </script>
 </body>
